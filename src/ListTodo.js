@@ -36,9 +36,7 @@ export default class ListTodo extends Component {
       </tr>
     ))}
   </tbody>
-    
   </Table>
-  
       </div>
     );
   }

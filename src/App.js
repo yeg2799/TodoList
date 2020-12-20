@@ -25,6 +25,12 @@ export default class App extends Component {
       .then((data) => this.setState({ categoryList: data }))
       .catch((err) => console.error(err));
   };
+  changeCategory=(category)=>{
+    this.setState({currentCategory:category.categoryName});
+    this.setState({currentId:category.id});
+    this.getTasks(category.categoryName)
+    
+  }
   getTasks = (categoryName) => {
     let url = "http://localhost:5000/tasks";
     if(categoryName){
@@ -35,14 +41,6 @@ export default class App extends Component {
       .then((data) => this.setState({ tasks: data }))
       .catch((err) => console.error(err));
   };
-
-  changeCategory=(category)=>{
-    this.setState({currentCategory:category.categoryName});
-    this.setState({currentId:category.id});
-    this.getTasks(category.categoryName)
-    
-  }
-
   addTask = (event) => {
     const requestOptions = {
       method: "POST",
@@ -57,7 +55,7 @@ export default class App extends Component {
       .then((response) => response.json())
       .then((data) => this.setState({ id: data.id }));
 
-     alertify.success("task is added",1);
+     alertify.success(this.state.currentTask+" is added",1);
      
   };
   onChangeHandle=(event)=>{
@@ -68,10 +66,11 @@ handleSubmit=()=>{
 }
 
 deleteTask=(task)=>{
+ 
   fetch(this.state.url+task.id, {
     method: 'DELETE',
   });
-  
+  alertify.warning("Delete task :(")
   this.getTasks();
 }
 
