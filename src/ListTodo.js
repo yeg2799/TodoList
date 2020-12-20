@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { Table, Button } from "reactstrap";
 
 export default class ListTodo extends Component {
-  
-  
   render() {
     return (
       <div>

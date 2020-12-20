@@ -24,16 +24,6 @@
       "categoryid": "Other",
       "task": "play computer game",
       "id": 5
-    },
-    {
-      "categoryid": "Other",
-      "task": "watch a film",
-      "id": 6
-    },
-    {
-      "categoryid": "Homework",
-      "task": "Learn css",
-      "id": 7
     }
   ],
   "categoryList": [
