@@ -73,11 +73,14 @@ export default class App extends Component {
           method: "DELETE",
         });
         alertify.error("Delete task :(");
+        this.componentDidMount();
+        
       },
       () => {
         alertify.success("Cancel");
       }
     );
+    
   };
 
   updateTask = (task) => {
@@ -85,8 +88,8 @@ export default class App extends Component {
       method: "PUT",
       body: JSON.stringify({
         id: task.id,
-        categoryList: task.categoryList,
-        task: this.state.currenttask,
+        categoryid: this.state.currentSubject,
+        task: this.state.currentTask,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
