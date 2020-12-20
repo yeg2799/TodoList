@@ -13,11 +13,15 @@ export default class App extends Component {
     currentSubject: "Homework",
     url: "http://localhost:5000/tasks/",
     categoryList: [],
+    
   };
 
   componentDidMount() {
     this.getCategoryList();
     this.getTasks();
+  }
+  refreshPage=()=>{
+    window.location.reload();
   }
   getCategoryList = () => {
     fetch("http://localhost:5000/categoryList")
@@ -40,7 +44,7 @@ export default class App extends Component {
       .then((data) => this.setState({ tasks: data }))
       .catch((err) => console.error(err));
   };
-  addTask = (event) => {
+  addTask = () => {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -58,11 +62,12 @@ export default class App extends Component {
       .then((data) => this.setState({ id: data.id }));
 
     alertify.success(this.state.currentTask + " is added", 1);
+   
   };
   onChangeHandle = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
-  handleSubmit = () => {};
+
 
   deleteTask = (task) => {
     alertify.confirm(
@@ -73,8 +78,7 @@ export default class App extends Component {
           method: "DELETE",
         });
         alertify.error("Delete task :(");
-        this.componentDidMount();
-        
+        this.refreshPage();
       },
       () => {
         alertify.success("Cancel");
@@ -84,19 +88,31 @@ export default class App extends Component {
   };
 
   updateTask = (task) => {
-    fetch(this.state.url + task.id, {
-      method: "PUT",
-      body: JSON.stringify({
-        id: task.id,
-        categoryid: this.state.currentSubject,
-        task: this.state.currentTask,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
+    alertify.confirm(
+      "are you sure?",
+      "are you wanna sure update this task?",
+      () => {
+        fetch(this.state.url + task.id, {
+          method: "PUT",
+          body: JSON.stringify({
+            id: task.id,
+            categoryid: this.state.currentSubject,
+            task: this.state.currentTask,
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        })
+          .then((response) => response.json())
+          .then((json) => console.log(json));
+        alertify.success("Updated task"); 
+        this.refreshPage();
       },
-    })
-      .then((response) => response.json())
-      .then((json) => console.log(json));
+      () => {
+        alertify.error("Cancel");
+      }
+    );
+   
   };
   render() {
     return (
@@ -106,6 +122,7 @@ export default class App extends Component {
           <AddTask
             addTask={this.addTask}
             currenTask={this.state.currentTask}
+            currentSubject={this.state.currentSubject}
             onChangeHandle={this.onChangeHandle}
             categoryList={this.state.categoryList}
           ></AddTask>
@@ -115,6 +132,7 @@ export default class App extends Component {
                 categoryList={this.state.categoryList}
                 changeCategory={this.changeCategory}
                 currentCategory={this.state.currentCategory}
+                
               ></CategoryList>
             </Col>
             <Col xs="9">
@@ -123,6 +141,7 @@ export default class App extends Component {
                 deleteTask={this.deleteTask}
                 updateTask={this.updateTask}
                 getTasks={this.getTasks}
+              
               ></ListTodo>
             </Col>
           </Row>

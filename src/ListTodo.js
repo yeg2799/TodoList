@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Table, Button } from "reactstrap";
 
 export default class ListTodo extends Component {
+  
   render() {
     return (
       <div>
@@ -14,7 +15,7 @@ export default class ListTodo extends Component {
         <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody >
     {this.props.tasks.map((task) => (
       <tr key={task.id}>
         <th scope="row">{task.id}</th>
