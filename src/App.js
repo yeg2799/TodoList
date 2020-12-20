@@ -7,32 +7,43 @@ import alertify from "alertifyjs";
 export default class App extends Component {
   state = {
     tasks: [],
-    currenttask: "",
-    currentcategory:"",
-    currentid:""
+    currentTask: "",
+    currentCategory:"",
+    currentId:"",
+    currentSubject:"Homework",
+    url:"http://localhost:5000/tasks/",
+    categoryList: [],
   };
-  componentDidMount() {
+ 
+  componentDidMount(){
+    this.getCategoryList();
     this.getTasks();
-    
   }
-  getTasks = (categoryid) => {
-    let url = "http://localhost:3000/tasks";
-    if(categoryid){
-      url+="?categoryid="+categoryid;
+  getCategoryList = () => {
+    fetch("http://localhost:5000/categoryList")
+      .then((response) => response.json())
+      .then((data) => this.setState({ categoryList: data }))
+      .catch((err) => console.error(err));
+  };
+  getTasks = (categoryName) => {
+    let url = "http://localhost:5000/tasks";
+    if(categoryName){
+      url+="?categoryid="+categoryName;
     }
     fetch(url)
       .then((response) => response.json())
       .then((data) => this.setState({ tasks: data }))
       .catch((err) => console.error(err));
   };
+
   changeCategory=(category)=>{
-    this.setState({currentcategory:category.categoryName});
-    this.setState({currentid:category.id});
-    this.getTasks(category.id)
+    this.setState({currentCategory:category.categoryName});
+    this.setState({currentId:category.id});
+    this.getTasks(category.categoryName)
     
   }
-  AddTask = (event) => {
-    event.preventDefault();
+
+  addTask = (event) => {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -40,29 +51,33 @@ export default class App extends Component {
         Authorization: "Bearer my-token",
         "My-Custom-Header": "foobar",
       },
-      body: JSON.stringify({ categoryList:this.state.currentid, task: this.state.currenttask }),
+      body: JSON.stringify({ categoryid:this.state.currentSubject, task: this.state.currentTask }),
     };
-    fetch("http://localhost:3000/tasks", requestOptions)
+    fetch(this.state.url, requestOptions)
       .then((response) => response.json())
       .then((data) => this.setState({ id: data.id }));
 
      alertify.success("task is added",1);
-     this.getTasks();
+     
   };
   onChangeHandle=(event)=>{
-    let name=event.target.name;
-    let value=event.target.value;
-    this.setState({[name]:value})
-   
+    this.setState({[event.target.name]:event.target.value})
 }
+handleSubmit=()=>{
+  
+}
+
 deleteTask=(task)=>{
-  fetch('http://localhost:3000/tasks/'+task.id, {
+  fetch(this.state.url+task.id, {
     method: 'DELETE',
   });
+  
   this.getTasks();
 }
+
 updateTask=(task)=>{
-  fetch('http://localhost:3000/tasks/'+task.id, {
+  
+  fetch(this.state.url+task.id, {
   method: 'PUT',
   body: JSON.stringify({
     id: task.id,
@@ -82,14 +97,14 @@ updateTask=(task)=>{
         <Container>
           <h1>My Todo</h1>
               <AddTask
-                addtask={this.AddTask}
-                currentask={this.state.currenttask}
+                addTask={this.addTask}
+                currenTask={this.state.currentTask}
                 onChangeHandle={this.onChangeHandle}
-              
+                categoryList={this.state.categoryList}
               ></AddTask>
               <Row>
-              <Col xs="3"><CategoryList changeCategory={this.changeCategory} currentCategory={this.state.currentcategory}></CategoryList></Col>
-              <Col xs="9"><ListTodo tasks={this.state.tasks}  deleteTask={this.deleteTask} updateTask={this.updateTask}></ListTodo></Col>
+              <Col xs="3"><CategoryList categoryList={this.state.categoryList} changeCategory={this.changeCategory} currentCategory={this.state.currentCategory}></CategoryList></Col>
+              <Col xs="9"><ListTodo tasks={this.state.tasks}  deleteTask={this.deleteTask} updateTask={this.updateTask} getTasks={this.getTasks}></ListTodo></Col>
               </Row>
              
           

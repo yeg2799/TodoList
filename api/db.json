@@ -1,24 +1,39 @@
 {
   "tasks": [
     {
-      "id": 1,
-      "categoryid": 1,
-      "task": "Matematikten 10 soru çöz"
+      "categoryid": "Homework",
+      "task": "Solve Test",
+      "id": 1
     },
     {
-      "id": 2,
-      "categoryid": 2,
-      "task": "10 Tane Şınav Çek"
+      "categoryid": "Sport",
+      "task": "go fitness",
+      "id": 2
     },
     {
-      "id": 3,
-      "categoryid": 3,
-      "task": "50 Sayfa Kitap Oku"
+      "categoryid": "Reading",
+      "task": "read a book",
+      "id": 3
     },
     {
-      "categoryid": 4,
-      "task": "daascdwdqwddqw",
+      "categoryid": "Other",
+      "task": "go Market",
       "id": 4
+    },
+    {
+      "categoryid": "Other",
+      "task": "play computer game",
+      "id": 5
+    },
+    {
+      "categoryid": "Other",
+      "task": "watch a film",
+      "id": 6
+    },
+    {
+      "categoryid": "Homework",
+      "task": "Learn css",
+      "id": 7
     }
   ],
   "categoryList": [
