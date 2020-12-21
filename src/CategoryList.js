@@ -1,11 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { ListGroup, ListGroupItem } from "reactstrap";
 
 export default class CategoryList extends Component {
- 
   render() {
     return (
-      <div>
+      <Fragment>
         <h1>Category List</h1>
 
         <ListGroup>
@@ -23,7 +22,7 @@ export default class CategoryList extends Component {
             </ListGroupItem>
           ))}
         </ListGroup>
-      </div>
+      </Fragment>
     );
   }
 }

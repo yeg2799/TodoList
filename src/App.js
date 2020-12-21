@@ -4,6 +4,12 @@ import { Container, Col, Row } from "reactstrap";
 import ListTodo from "./ListTodo";
 import CategoryList from "./CategoryList";
 import alertify from "alertifyjs";
+
+const { REACT_APP_API_DOMAIN } = process.env;
+
+const categoryListURI = `${REACT_APP_API_DOMAIN}/categoryList`;
+const tasksURI = `${REACT_APP_API_DOMAIN}/tasks/`;
+
 export default class App extends Component {
   state = {
     tasks: [],
@@ -11,39 +17,41 @@ export default class App extends Component {
     currentCategory: "",
     currentId: "",
     currentSubject: "Homework",
-    url: "http://localhost:5000/tasks/",
+    url: tasksURI,
     categoryList: [],
-    
+    updated: false,
   };
 
   componentDidMount() {
     this.getCategoryList();
     this.getTasks();
   }
-  refreshPage=()=>{
-    window.location.reload();
-  }
+
   getCategoryList = () => {
-    fetch("http://localhost:5000/categoryList")
+    fetch(categoryListURI)
       .then((response) => response.json())
       .then((data) => this.setState({ categoryList: data }))
       .catch((err) => console.error(err));
   };
+
   changeCategory = (category) => {
     this.setState({ currentCategory: category.categoryName });
     this.setState({ currentId: category.id });
     this.getTasks(category.categoryName);
   };
+
   getTasks = (categoryName) => {
-    let url = "http://localhost:5000/tasks";
+    let url = tasksURI;
+
     if (categoryName) {
-      url += "?categoryid=" + categoryName;
+      url += `?categoryid=${categoryName}`;
     }
     fetch(url)
       .then((response) => response.json())
       .then((data) => this.setState({ tasks: data }))
       .catch((err) => console.error(err));
   };
+
   addTask = () => {
     const requestOptions = {
       method: "POST",
@@ -62,12 +70,11 @@ export default class App extends Component {
       .then((data) => this.setState({ id: data.id }));
 
     alertify.success(this.state.currentTask + " is added", 1);
-   
   };
+
   onChangeHandle = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
-
 
   deleteTask = (task) => {
     alertify.confirm(
@@ -78,13 +85,11 @@ export default class App extends Component {
           method: "DELETE",
         });
         alertify.error("Delete task :(");
-        this.refreshPage();
       },
       () => {
         alertify.success("Cancel");
       }
     );
-    
   };
 
   updateTask = (task) => {
@@ -104,49 +109,44 @@ export default class App extends Component {
           },
         })
           .then((response) => response.json())
-          .then((json) => console.log(json));
-        alertify.success("Updated task"); 
-        this.refreshPage();
+          .then(() => this.getTasks());
+        alertify.success("Updated task");
       },
       () => {
         alertify.error("Cancel");
       }
     );
-   
   };
+
   render() {
     return (
-      <div>
-        <Container>
-          <h1>My Todo</h1>
-          <AddTask
-            addTask={this.addTask}
-            currenTask={this.state.currentTask}
-            currentSubject={this.state.currentSubject}
-            onChangeHandle={this.onChangeHandle}
-            categoryList={this.state.categoryList}
-          ></AddTask>
-          <Row>
-            <Col xs="3">
-              <CategoryList
-                categoryList={this.state.categoryList}
-                changeCategory={this.changeCategory}
-                currentCategory={this.state.currentCategory}
-                
-              ></CategoryList>
-            </Col>
-            <Col xs="9">
-              <ListTodo
-                tasks={this.state.tasks}
-                deleteTask={this.deleteTask}
-                updateTask={this.updateTask}
-                getTasks={this.getTasks}
-              
-              ></ListTodo>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+      <Container>
+        <h1>My Todo</h1>
+        <AddTask
+          addTask={this.addTask}
+          currenTask={this.state.currentTask}
+          currentSubject={this.state.currentSubject}
+          onChangeHandle={this.onChangeHandle}
+          categoryList={this.state.categoryList}
+        />
+        <Row>
+          <Col xs="3">
+            <CategoryList
+              categoryList={this.state.categoryList}
+              changeCategory={this.changeCategory}
+              currentCategory={this.state.currentCategory}
+            />
+          </Col>
+          <Col xs="9">
+            <ListTodo
+              tasks={this.state.tasks}
+              deleteTask={this.deleteTask}
+              updateTask={this.updateTask}
+              getTasks={this.getTasks}
+            />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
