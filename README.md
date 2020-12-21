@@ -22,7 +22,7 @@ npm i
 In the project directory, you can run:
 firstly;
 ```
-npm run jsonStart
+npm run jsonstart
 ```
 and then
 ```
