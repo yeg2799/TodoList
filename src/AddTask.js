@@ -18,7 +18,7 @@ export default class AddTask extends Component {
           <Input
             type="select"
             name="currentSubject"
-            id="selectSubject"
+            id="selectSubject" 
             onChange={this.props.onChangeHandle}
           >
             {this.props.categoryList.map((category) => (
